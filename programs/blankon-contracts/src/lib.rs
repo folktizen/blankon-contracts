@@ -19,13 +19,13 @@ pub mod blankon_contracts {
         ctx: Context<Initialize>,
         gold_pyth_account: Pubkey,
         sol_pyth_account: Pubkey,
-        fartcoin_pyth_account: Pubkey,
+        btc_pyth_account: Pubkey,
     ) -> Result<()> {
         initialize_handler(
             ctx,
             gold_pyth_account,
             sol_pyth_account,
-            fartcoin_pyth_account,
+            btc_pyth_account,
         )
     }
 

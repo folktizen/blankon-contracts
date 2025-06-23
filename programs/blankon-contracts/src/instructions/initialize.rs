@@ -14,7 +14,7 @@ pub fn initialize_handler(
     ctx: Context<Initialize>,
     gold_pyth_account: Pubkey,
     sol_pyth_account: Pubkey,
-    fartcoin_pyth_account: Pubkey,
+    btc_pyth_account: Pubkey,
 ) -> Result<()> {
     let blankon_state = &mut ctx.accounts.blankon_state;
     blankon_state.admin = ctx.accounts.admin.key();
@@ -39,9 +39,9 @@ pub fn initialize_handler(
         global_funding_index: 0,
     };
 
-    blankon_state.markets[FARTCOIN as usize] = MarketInfo {
-        asset_type: FARTCOIN,
-        pyth_price_account: fartcoin_pyth_account,
+    blankon_state.markets[BTC as usize] = MarketInfo {
+        asset_type: BTC,
+        pyth_price_account: btc_pyth_account,
         skew: 0,
         total_long_size: 0,
         total_short_size: 0,

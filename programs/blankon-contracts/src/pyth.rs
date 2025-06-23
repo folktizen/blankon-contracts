@@ -5,7 +5,7 @@ use pyth_solana_receiver_sdk::price_update::{get_feed_id_from_hex, PriceUpdateV2
 pub const FEED_IDS: [&str; 3] = [
     "0x765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2",
     "0xef0d8b6fda2ceba41da15d4095d1da392a0d2f8ed0c6c7bc0f4cfac8c280b56d",
-    "0x58cd29ef0e714c5affc44f269b2c1899a52da4169d7acc147b9da692e6953608",
+    "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43",
 ];
 
 pub fn get_pyth_price<'info>(
