@@ -3,14 +3,14 @@ use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    #[account(init, payer = admin, space = 8 + 32 + 3 * 64)]
+    #[account(init, payer = admin, space = 8 + BlankonState::LEN)]
     pub blankon_state: Account<'info, BlankonState>,
     #[account(mut)]
     pub admin: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(
+pub fn initialize_handler(
     ctx: Context<Initialize>,
     gold_pyth_account: Pubkey,
     sol_pyth_account: Pubkey,

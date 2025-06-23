@@ -5,8 +5,11 @@ package_manager = "yarn"
 resolution = true
 skip-lint = false
 
+[programs.localnet]
+blankon_contracts = "99qG6bAkds5MpT37m61LFr8eJibvUGEu2GQ6TGxuwmda"
+
 [programs.devnet]
-blankon_contracts = "8i79YFqX8BFZbxx81jYRsYTsbx3ChYheP54BaHj6aVNy"
+blankon_contracts = "99qG6bAkds5MpT37m61LFr8eJibvUGEu2GQ6TGxuwmda"
 
 [registry]
 url = "https://api.apr.dev"

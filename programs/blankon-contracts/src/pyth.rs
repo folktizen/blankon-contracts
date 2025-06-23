@@ -45,12 +45,6 @@ pub fn get_pyth_price<'info>(
         (price_value * multiplier) as u64
     };
 
-    // Handle negative prices (though they should be rare in most use cases)
-    if normalized_price < 0 {
-        msg!("Warning: Negative price detected from Pyth oracle");
-        return Err(error!(DErrorCode::InvalidOraclePrice));
-    }
-
     // Log the price information for debugging
     msg!(
         "Pyth price: raw={}, expo={}, normalized={}",

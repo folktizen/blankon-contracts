@@ -6,6 +6,10 @@ pub struct BlankonState {
     pub markets: [MarketInfo; 3], // gold, SOL, fartcoin
 }
 
+impl BlankonState {
+    pub const LEN: usize = std::mem::size_of::<Self>();
+}
+
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy)]
 pub struct MarketInfo {
     pub asset_type: u8,
@@ -15,6 +19,10 @@ pub struct MarketInfo {
     pub total_short_size: u64,
     pub last_funding_time: i64,
     pub global_funding_index: i128, // Cumulative funding index
+}
+
+impl MarketInfo {
+    pub const LEN: usize = std::mem::size_of::<Self>();
 }
 
 // Constants for asset types

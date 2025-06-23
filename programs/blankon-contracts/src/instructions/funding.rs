@@ -17,7 +17,7 @@ pub struct CalculateFunding<'info> {
     pub clock: Sysvar<'info, Clock>,
 }
 
-pub fn handler(ctx: Context<CalculateFunding>) -> Result<()> {
+pub fn calculate_funding_handler(ctx: Context<CalculateFunding>) -> Result<()> {
     let blankon_state = &mut ctx.accounts.blankon_state;
     let current_time = ctx.accounts.clock.unix_timestamp;
 
