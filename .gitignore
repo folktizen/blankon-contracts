@@ -1,0 +1,25 @@
+# macOS system files
+.DS_Store
+
+# Editor/IDE files
+.anchor
+
+# Build artifacts and Rust backup files
+secrets/
+target/
+**/*.rs.bk
+
+# Local test ledger data
+test-ledger/
+
+# Node.js dependencies
+node_modules/
+
+# Yarn v2+ (Berry) files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

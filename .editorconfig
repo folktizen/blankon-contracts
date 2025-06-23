@@ -1,0 +1,78 @@
+root = true
+
+# Global settings
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 120
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+indent_size = 2
+
+# YAML files
+[*.yml]
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# TOML files
+[*.toml]
+indent_size = 2
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+# Rust source files
+[*.rs]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# TypeScript and JavaScript files
+[*.ts]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.js]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Migration scripts (TypeScript)
+[migrations/*.ts]
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Anchor.toml and Cargo files
+[Anchor.toml]
+indent_size = 2
+
+[Cargo.toml]
+indent_size = 2
+
+[Xargo.toml]
+indent_size = 2
+
+# EditorConfig best practices
+# - Keep settings explicit for each file type
+# - Use spaces for indentation for consistency
+# - Set max line length for readability
+# - Ensure final newline for POSIX compatibility
+# - Trim trailing whitespace except in Markdown

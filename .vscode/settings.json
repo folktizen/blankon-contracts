@@ -1,0 +1,42 @@
+{
+  // EditorConfig support (VSCode reads .editorconfig automatically)
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [
+    120
+  ],
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+  // Rust
+  "rust-analyzer.rustfmt.extraArgs": [
+    "--config-path=rustfmt.toml"
+  ],
+  "rust-analyzer.check.command": "clippy",
+  // TypeScript/JavaScript
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  // TOML
+  "[toml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  // Shell
+  "[shellscript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  // Markdown
+  "[markdown]": {
+    "editor.tabSize": 2,
+    "editor.wordWrap": "on",
+    "files.trimTrailingWhitespace": false
+  }
+}

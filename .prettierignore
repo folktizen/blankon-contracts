@@ -1,0 +1,14 @@
+# System/editor files
+.anchor
+.DS_Store
+
+# Build artifacts
+dist
+build
+target
+
+# Dependencies
+node_modules
+
+# Local/test data
+test-ledger

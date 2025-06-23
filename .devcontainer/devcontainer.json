@@ -1,0 +1,58 @@
+{
+  // Name for the container
+  "name": "BLANKON Contracts",
+  // Build using the Dockerfile in the parent directory
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  // Set the workspace folder inside the container
+  "workspaceFolder": "/workspaces/blankon-contracts",
+  // VS Code-specific customizations (settings and extensions)
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.eol": "\n"
+      },
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  // Optional: Add devcontainer features for extra tools (uncomment if needed)
+  // "features": {
+  //   "ghcr.io/devcontainers/features/github-cli:1": {},
+  //   "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  // },
+  // Optional: Mount local Solana CLI config for persistent keypairs (uncomment if needed)
+  // "mounts": [
+  //   "source=${localEnv:HOME}/.config/solana,target=/home/solana/.config/solana,type=bind,consistency=cached"
+  // ],
+  // Optional: Set environment variables for the container (uncomment and edit as needed)
+  // "containerEnv": {
+  //   "ANCHOR_WALLET": "/workspaces/blankon-contracts/target/deploy/blankon_contracts-keypair.json"
+  // },
+  // Optional: Run commands before postCreateCommand (uncomment if needed)
+  // "onCreateCommand": "echo 'Container created'",
+  // Run these commands after the container is created
+  "postCreateCommand": [
+    "anchor --version",
+    "solana --version",
+    "rustc --version",
+    "node --version",
+    "yarn --version",
+    "avm --version"
+  ],
+  // Optional: Run commands to update dependencies/content after container update (uncomment if needed)
+  // "updateContentCommand": "yarn install",
+  // Use the solana user for correct permissions
+  "remoteUser": "solana"
+}
