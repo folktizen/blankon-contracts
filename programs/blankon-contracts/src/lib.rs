@@ -21,12 +21,7 @@ pub mod blankon_contracts {
         sol_pyth_account: Pubkey,
         btc_pyth_account: Pubkey,
     ) -> Result<()> {
-        initialize_handler(
-            ctx,
-            gold_pyth_account,
-            sol_pyth_account,
-            btc_pyth_account,
-        )
+        initialize_handler(ctx, gold_pyth_account, sol_pyth_account, btc_pyth_account)
     }
 
     pub fn create_user_account(ctx: Context<CreateUserAccount>) -> Result<()> {
