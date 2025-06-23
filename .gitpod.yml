@@ -36,31 +36,3 @@ ports:
 # Environment variables (add more as needed)
 env:
   ANCHOR_WALLET: /workspace/blankon-contracts/secrets/solana-keypair.json
-
-# VS Code settings (optional, can be extended)
-vscode:
-  settings:
-    editor.formatOnSave: true
-    editor.tabSize: 2
-    editor.insertSpaces: true
-    files.trimTrailingWhitespace: true
-    files.insertFinalNewline: true
-    files.eol: "\n"
-    rust-analyzer.rustfmt.extraArgs: ["--config-path=rustfmt.toml"]
-    rust-analyzer.check.command: "clippy"
-    [typescript]:
-      editor.tabSize: 2
-      editor.insertSpaces: true
-    [javascript]:
-      editor.tabSize: 2
-      editor.insertSpaces: true
-    [toml]:
-      editor.tabSize: 2
-      editor.insertSpaces: true
-    [shellscript]:
-      editor.tabSize: 2
-      editor.insertSpaces: true
-    [markdown]:
-      editor.tabSize: 2
-      editor.wordWrap: on
-      files.trimTrailingWhitespace: false
