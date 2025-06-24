@@ -7,10 +7,7 @@ pub struct CreateUserAccount<'info> {
     #[account(
         init,
         payer = user,
-        space = 8 + // discriminator
-               32 + // owner pubkey
-               8 +  // balance (u64)
-               3 * (8 + 8 + 8), // 3 positions (size, entry_price, last_funding_index)
+        space = 8 + UserAccount::LEN,
         seeds = [b"user-account", user.key().as_ref()],
         bump
     )]

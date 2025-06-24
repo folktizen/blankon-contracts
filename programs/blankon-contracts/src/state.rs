@@ -54,3 +54,7 @@ pub struct UserAccount {
     pub balance: u64,             // $10,000 in lamports equivalent
     pub positions: [Position; 3], // gold, sol, btc positions
 }
+
+impl UserAccount {
+    pub const LEN: usize = std::mem::size_of::<Self>();
+}
