@@ -8,8 +8,28 @@ pub mod state;
 pub use crate::instructions::*;
 
 use anchor_lang::prelude::*;
+use solana_security_txt::security_txt;
 
-declare_id!("99qG6bAkds5MpT37m61LFr8eJibvUGEu2GQ6TGxuwmda");
+#[cfg(not(feature = "no-entrypoint"))]
+security_txt! {
+    // Required fields
+    name: "BLANKON",
+    project_url: "https://blankon.folktizen.xyz",
+    contacts: "email:security@folktizen.xyz",
+    policy: "https://github.com/folktizen/blankon-contracts/blob/main/SECURITY.md",
+
+    // Optional Fields
+    preferred_languages: "en,id",
+    source_code: "https://github.com/folktizen/blankon-contracts",
+    auditors: "None yet!",
+    acknowledgements: "
+Shoutout to the contributors and whitehats who keep BLANKON safe!
+If you find a bug, you’re a hero.
+- The Folktizen Team
+"
+}
+
+declare_id!("2ZV48S4LYwusvaahmKSSkkqcYFDPTPJHJhyHHMVLHuY4");
 
 #[program]
 pub mod blankon_contracts {
