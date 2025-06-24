@@ -2,7 +2,8 @@
 .DS_Store
 
 # Editor/IDE files
-.anchor
+.anchor/
+docker-target/
 
 # Build artifacts and Rust backup files
 secrets/
