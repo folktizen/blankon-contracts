@@ -9,7 +9,6 @@ pub struct CalculateFunding<'info> {
     #[account(mut)]
     pub blankon_state: Account<'info, BlankonState>,
 
-    // Optional: If you want to restrict this to admin only
     #[account(constraint = admin.key() == blankon_state.admin @ DErrorCode::UnauthorizedAccess)]
     pub admin: Signer<'info>,
 

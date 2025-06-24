@@ -29,7 +29,7 @@ If you find a bug, you’re a hero.
 "
 }
 
-declare_id!("2ZV48S4LYwusvaahmKSSkkqcYFDPTPJHJhyHHMVLHuY4");
+declare_id!("AA9xjMbf543L5vHqTceDGsFFKRW1ZXdTC6T8f33ux6yf");
 
 #[program]
 pub mod blankon_contracts {
@@ -48,32 +48,20 @@ pub mod blankon_contracts {
         create_handler(ctx)
     }
 
-    pub fn open_position(
-        ctx: Context<OpenPosition>,
+    pub fn open_position<'info>(
+        mut ctx: Context<'_, '_, '_, 'info, OpenPosition<'info>>,
         asset_type: u8,
         size: i64,
         leverage: u8,
     ) -> Result<()> {
         // Apply any pending funding before opening a new position
-        // instructions::positions::apply_funding_handler(Context::new(
-        //     &ctx.program_id,
-        //     &ctx.accounts,
-        //     &ctx.remaining_accounts,
-        //     ctx.bumps.clone(),
-        // ))?;
-
+        apply_funding_handler(&mut ctx)?;
         open_handler(ctx, asset_type, size, leverage)
     }
 
-    pub fn close_position(ctx: Context<ClosePosition>, asset_type: u8) -> Result<()> {
+    pub fn close_position(mut ctx: Context<OpenPosition>, asset_type: u8) -> Result<()> {
         // Apply any pending funding before closing the position
-        // instructions::positions::apply_funding_handler(Context::new(
-        //     &ctx.program_id,
-        //     &ctx.accounts,
-        //     &ctx.remaining_accounts,
-        //     ctx.bumps.clone(),
-        // ))?;
-
+        apply_funding_handler(&mut ctx)?;
         close_handler(ctx, asset_type)
     }
 
@@ -81,7 +69,15 @@ pub mod blankon_contracts {
         calculate_funding_handler(ctx)
     }
 
-    pub fn apply_funding(ctx: Context<ApplyFunding>) -> Result<()> {
-        apply_funding_handler(ctx)
+    pub fn apply_funding(mut ctx: Context<OpenPosition>) -> Result<()> {
+        apply_funding_handler(&mut ctx)
+    }
+
+    pub fn get_user_status(ctx: Context<UserStatus>) -> Result<UserSnapshot> {
+        user_status_handler(ctx)
+    }
+
+    pub fn get_market_status(ctx: Context<MarketStatus>) -> Result<MarketSnapshots> {
+        market_status_handler(ctx)
     }
 }

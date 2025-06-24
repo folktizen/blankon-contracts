@@ -6,10 +6,8 @@ use crate::state::*;
 use anchor_lang::prelude::*;
 use pyth_solana_receiver_sdk::price_update::PriceUpdateV2;
 
-// Add this to instructions/positions.rs
-
 #[derive(Accounts)]
-pub struct ApplyFunding<'info> {
+pub struct OpenPosition<'info> {
     #[account(mut)]
     pub blankon_state: Account<'info, BlankonState>,
 
@@ -22,9 +20,11 @@ pub struct ApplyFunding<'info> {
     pub user_account: Account<'info, UserAccount>,
 
     pub user: Signer<'info>,
+
+    pub pyth_price_account: Account<'info, PriceUpdateV2>,
 }
 
-pub fn apply_funding_handler(ctx: Context<ApplyFunding>) -> Result<()> {
+pub fn apply_funding_handler(ctx: &mut Context<OpenPosition>) -> Result<()> {
     let blankon_state = &ctx.accounts.blankon_state;
 
     // Process each market
@@ -119,24 +119,6 @@ pub fn apply_funding_handler(ctx: Context<ApplyFunding>) -> Result<()> {
 
 // ===== OPEN POSITION =====
 
-#[derive(Accounts)]
-pub struct OpenPosition<'info> {
-    #[account(mut)]
-    pub blankon_state: Account<'info, BlankonState>,
-
-    #[account(
-        mut,
-        seeds = [b"user-account", user.key().as_ref()],
-        bump,
-        constraint = user_account.owner == user.key() @ DErrorCode::UnauthorizedAccess
-    )]
-    pub user_account: Account<'info, UserAccount>,
-
-    pub user: Signer<'info>,
-
-    pub pyth_price_account: Account<'info, PriceUpdateV2>,
-}
-
 pub fn open_handler(
     ctx: Context<OpenPosition>,
     asset_type: u8,
@@ -162,6 +144,24 @@ pub fn open_handler(
         DErrorCode::InvalidOracleAccount
     );
 
+    // Update market skew
+    if size > 0 {
+        // Long position
+        market.total_long_size = market
+            .total_long_size
+            .checked_add(size as u64)
+            .ok_or(DErrorCode::MathOverflow)?;
+    } else {
+        // Short position
+        market.total_short_size = market
+            .total_short_size
+            .checked_add((-size) as u64)
+            .ok_or(DErrorCode::MathOverflow)?;
+    }
+
+    // Recalculate market skew
+    market.skew = market.total_long_size as i64 - market.total_short_size as i64;
+
     // Get the current price from Pyth
     let base_price = get_pyth_price(&ctx.accounts.pyth_price_account, asset_type)?;
 
@@ -169,9 +169,10 @@ pub fn open_handler(
     let entry_price = calculate_price_from_skew(base_price, market.skew, SKEW_SCALE);
 
     // Calculate the required margin
-    let position_notional = (size.abs() as u128 * entry_price as u128 / PRICE_DECIMALS) as u64;
+    let position_notional =
+        (size.abs() as u128 * leverage as u128 * entry_price as u128 / PRICE_DECIMALS) as u64;
     let required_margin =
-        position_notional * INITIAL_MARGIN_REQUIREMENT / PERCENTAGE_DECIMALS / leverage as u64;
+        ((position_notional * INITIAL_MARGIN_REQUIREMENT) / PERCENTAGE_DECIMALS) / leverage as u64;
 
     require!(
         ctx.accounts.user_account.balance >= required_margin,
@@ -198,25 +199,8 @@ pub fn open_handler(
         position.size = size;
         position.entry_price = entry_price;
         position.last_funding_index = 0; // Will be updated in funding calculations
+        position.leverage = leverage;
     }
-
-    // Update market skew
-    if size > 0 {
-        // Long position
-        market.total_long_size = market
-            .total_long_size
-            .checked_add(size as u64)
-            .ok_or(DErrorCode::MathOverflow)?;
-    } else {
-        // Short position
-        market.total_short_size = market
-            .total_short_size
-            .checked_add((-size) as u64)
-            .ok_or(DErrorCode::MathOverflow)?;
-    }
-
-    // Recalculate market skew
-    market.skew = market.total_long_size as i64 - market.total_short_size as i64;
 
     msg!(
         "Opened {} position for asset {}: size={}, leverage={}x, margin={}, entry_price={}",
@@ -233,25 +217,7 @@ pub fn open_handler(
 
 // ===== CLOSE POSITION =====
 
-#[derive(Accounts)]
-pub struct ClosePosition<'info> {
-    #[account(mut)]
-    pub blankon_state: Account<'info, BlankonState>,
-
-    #[account(
-        mut,
-        seeds = [b"user-account", user.key().as_ref()],
-        bump,
-        constraint = user_account.owner == user.key() @ DErrorCode::UnauthorizedAccess
-    )]
-    pub user_account: Account<'info, UserAccount>,
-
-    pub user: Signer<'info>,
-
-    pub pyth_price_account: Account<'info, PriceUpdateV2>,
-}
-
-pub fn close_handler(ctx: Context<ClosePosition>, asset_type: u8) -> Result<()> {
+pub fn close_handler(ctx: Context<OpenPosition>, asset_type: u8) -> Result<()> {
     // Validate inputs
     require!(asset_type < 3, DErrorCode::InvalidAssetType);
 
@@ -279,7 +245,7 @@ pub fn close_handler(ctx: Context<ClosePosition>, asset_type: u8) -> Result<()> 
     let exit_price = calculate_price_from_skew(base_price, market.skew, SKEW_SCALE);
 
     // Calculate PnL
-    let position_size = position.size.abs() as u128;
+    let position_size = position.size.abs() as u128 * position.leverage as u128;
     let entry_value = position_size * position.entry_price as u128 / PRICE_DECIMALS;
     let exit_value = position_size * exit_price as u128 / PRICE_DECIMALS;
 
@@ -301,8 +267,11 @@ pub fn close_handler(ctx: Context<ClosePosition>, asset_type: u8) -> Result<()> 
 
     // Calculate the margin that was locked
     let position_notional =
-        (position.size.abs() as u128 * position.entry_price as u128 / PRICE_DECIMALS) as u64;
-    let locked_margin = position_notional * INITIAL_MARGIN_REQUIREMENT / PERCENTAGE_DECIMALS;
+        (position.size.abs() as u128 * position.leverage as u128 * position.entry_price as u128
+            / PRICE_DECIMALS) as u64;
+    let locked_margin = position_notional * INITIAL_MARGIN_REQUIREMENT
+        / PERCENTAGE_DECIMALS
+        / position.leverage as u64;
 
     let user_account: &mut Account<'_, UserAccount> = &mut ctx.accounts.user_account;
 
@@ -354,6 +323,7 @@ pub fn close_handler(ctx: Context<ClosePosition>, asset_type: u8) -> Result<()> 
         position.size = 0;
         position.entry_price = 0;
         position.last_funding_index = 0;
+        position.leverage = 0;
     }
 
     msg!(

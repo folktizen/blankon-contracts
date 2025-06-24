@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 #[account]
 pub struct BlankonState {
     pub admin: Pubkey,
-    pub markets: [MarketInfo; 3], // gold, sol, btc
+    pub markets: [MarketInfo; 3], // Gold, SOL, BTC
 }
 
 impl BlankonState {
@@ -34,25 +34,15 @@ pub const BTC: u8 = 2;
 pub struct Position {
     pub size: i64,                // Positive for long, negative for short
     pub entry_price: u64,         // Price at entry
+    pub leverage: u8,             // Leverage used for the position
     pub last_funding_index: i128, // Last funding index applied to this position
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct PositionStatus {
-    pub size: i64,
-    pub entry_price: u64,
-    pub current_price: u64,
-    pub unrealized_pnl: i64,
-    pub initial_margin: u64,
-    pub maintenance_margin: u64,
-    pub claimable_value: u64,
 }
 
 #[account]
 pub struct UserAccount {
     pub owner: Pubkey,
     pub balance: u64,             // $10,000 in lamports equivalent
-    pub positions: [Position; 3], // gold, sol, btc positions
+    pub positions: [Position; 3], // Gold, SOL, BTC positions
 }
 
 impl UserAccount {

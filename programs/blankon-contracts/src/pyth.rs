@@ -19,7 +19,8 @@ pub fn get_pyth_price<'info>(
         get_feed_id_from_hex(feed_id).map_err(|_| error!(DErrorCode::InvalidOracleAccount))?;
 
     let price_update = pyth_price_account
-        .get_price_no_older_than(&Clock::get()?, 3600, &feed_id)
+        .get_price_unchecked(&feed_id)
+        // .get_price_no_older_than(&Clock::get()?, 36000, &feed_id)
         .map_err(|_| error!(DErrorCode::InvalidOracleAccount))?;
 
     // Convert price to a standard format (e.g., USD with 6 decimals)

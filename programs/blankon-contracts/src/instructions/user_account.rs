@@ -34,6 +34,7 @@ pub fn create_handler(ctx: Context<CreateUserAccount>) -> Result<()> {
             size: 0,
             entry_price: 0,
             last_funding_index: 0,
+            leverage: 0,
         };
     }
 
